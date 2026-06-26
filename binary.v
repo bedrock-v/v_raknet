@@ -1,4 +1,4 @@
-module v_raknet
+module raknet
 
 pub type Uint24 = u32
 

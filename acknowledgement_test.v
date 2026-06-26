@@ -1,4 +1,4 @@
-module v_raknet
+module raknet
 
 fn test_ack_ranges_roundtrip() {
 	mut ack := Acknowledgement{

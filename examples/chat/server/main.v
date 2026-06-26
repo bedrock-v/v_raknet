@@ -2,26 +2,26 @@ module main
 
 import os
 import sync
-import v_raknet
+import raknet
 
 @[heap]
 struct Room {
 mut:
 	next_id int
-	clients map[int]&v_raknet.Conn
+	clients map[int]&raknet.Conn
 	names   map[int]string
 	mutex   &sync.Mutex = sync.new_mutex()
 }
 
 fn new_room() &Room {
 	return &Room{
-		clients: map[int]&v_raknet.Conn{}
+		clients: map[int]&raknet.Conn{}
 		names:   map[int]string{}
 		mutex:   sync.new_mutex()
 	}
 }
 
-fn (mut room Room) add(conn &v_raknet.Conn) int {
+fn (mut room Room) add(conn &raknet.Conn) int {
 	room.mutex.lock()
 	id := room.next_id
 	room.next_id++
@@ -48,7 +48,7 @@ fn (mut room Room) remove(id int) string {
 
 fn (mut room Room) broadcast(from int, message string) {
 	room.mutex.lock()
-	mut clients := map[int]&v_raknet.Conn{}
+	mut clients := map[int]&raknet.Conn{}
 	for id, conn in room.clients {
 		clients[id] = conn
 	}
@@ -69,7 +69,7 @@ fn (mut room Room) broadcast(from int, message string) {
 	println(line)
 }
 
-fn handle_client(mut room Room, conn &v_raknet.Conn) {
+fn handle_client(mut room Room, conn &raknet.Conn) {
 	id := room.add(conn)
 
 	conn.write('name?'.bytes()) or {}
@@ -130,14 +130,14 @@ fn cli_args() []string {
 fn main() {
 	args := cli_args()
 	address := if args.len > 0 { args[0] } else { '127.0.0.1:19132' }
-	mut listener := v_raknet.listen(address) or {
+	mut listener := raknet.listen(address) or {
 		eprintln('listen failed: ${err.msg()}')
 		return
 	}
 	defer {
 		listener.close() or {}
 	}
-	listener.set_pong_data('v_raknet chat'.bytes())
+	listener.set_pong_data('raknet chat'.bytes())
 	mut room := new_room()
 	println('chat server listening on ${listener.addr()}')
 

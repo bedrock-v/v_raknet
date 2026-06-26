@@ -1,6 +1,6 @@
-# v_raknet chat example
+# raknet chat example
 
-Small terminal chat built on top of `v_raknet`.
+Small terminal chat built on top of `raknet`.
 
 Start the server:
 

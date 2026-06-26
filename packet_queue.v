@@ -1,4 +1,4 @@
-module v_raknet
+module raknet
 
 struct PacketQueue {
 mut:

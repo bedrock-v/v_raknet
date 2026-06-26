@@ -1,4 +1,4 @@
-module v_raknet
+module raknet
 
 import encoding.binary
 import hash.crc32

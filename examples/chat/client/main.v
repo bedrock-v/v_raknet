@@ -1,7 +1,7 @@
 module main
 
 import os
-import v_raknet
+import raknet
 
 fn cli_args() []string {
 	mut args := []string{}
@@ -14,7 +14,7 @@ fn cli_args() []string {
 	return args
 }
 
-fn read_server(mut conn v_raknet.Conn, done chan bool) {
+fn read_server(mut conn raknet.Conn, done chan bool) {
 	for {
 		packet := conn.read_packet() or {
 			done <- true
@@ -29,7 +29,7 @@ fn main() {
 	address := if args.len > 0 { args[0] } else { '127.0.0.1:19132' }
 	name := if args.len > 1 { args[1] } else { 'guest' }
 
-	mut conn := v_raknet.dial(address) or {
+	mut conn := raknet.dial(address) or {
 		eprintln('dial failed: ${err.msg()}')
 		return
 	}

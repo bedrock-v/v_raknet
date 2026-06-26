@@ -1,20 +1,20 @@
-# v_raknet
+# raknet
 
-`v_raknet` is a RakNet implementation for V, focused on the classic RakNet protocol used by Minecraft: Bedrock Edition.
+`raknet` is a RakNet implementation for V, focused on the classic RakNet protocol used by Minecraft: Bedrock Edition.
 
 The API is plain-structed and inspired by Sandertv's `go-raknet`.
 
 ## Basic Server
 
 ```v
-import v_raknet
+import raknet
 
-mut listener := v_raknet.listen('0.0.0.0:19132')!
+mut listener := raknet.listen('0.0.0.0:19132')!
 defer {
 	listener.close() or {}
 }
 
-listener.set_pong_data('v_raknet server'.bytes())
+listener.set_pong_data('raknet server'.bytes())
 
 mut conn := listener.accept()!
 mut buf := []u8{len: 4096}
@@ -25,9 +25,9 @@ conn.write(buf[..n])!
 ## Basic Client
 
 ```v
-import v_raknet
+import raknet
 
-mut conn := v_raknet.dial('127.0.0.1:19132')!
+mut conn := raknet.dial('127.0.0.1:19132')!
 defer {
 	conn.close() or {}
 }
@@ -40,9 +40,9 @@ println(packet.bytestr())
 ## Basic Ping
 
 ```v
-import v_raknet
+import raknet
 
-data := v_raknet.ping('127.0.0.1:19132')!
+data := raknet.ping('127.0.0.1:19132')!
 println(data.bytestr())
 ```
 
@@ -50,15 +50,15 @@ println(data.bytestr())
 
 ```v
 import time
-import v_raknet
+import raknet
 
-mut listener := v_raknet.ListenConfig{
+mut listener := raknet.ListenConfig{
 	max_mtu: 1200
 	disable_cookies: false
 	handshake_timeout: 10 * time.second
 }.listen('0.0.0.0:19132')!
 
-dialer := v_raknet.Dialer{
+dialer := raknet.Dialer{
 	max_mtu: 1200
 	timeout: 2 * time.second
 }

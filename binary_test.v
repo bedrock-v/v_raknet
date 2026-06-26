@@ -1,4 +1,4 @@
-module v_raknet
+module raknet
 
 fn test_uint24() {
 	mut value := Uint24(123456)

@@ -1,4 +1,4 @@
-module v_raknet
+module raknet
 
 fn test_reliable_ordered_packet() {
 	pk := Packet{

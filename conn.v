@@ -1,4 +1,4 @@
-module v_raknet
+module raknet
 
 import net
 import sync
