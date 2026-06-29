@@ -1,7 +1,7 @@
 Module {
 	name: 'raknet'
-	description: ' V library implementing a basic version of the RakNet protocol. '
-	version: '0.1.0'
+	description: 'RakNet protocol implementation for V.'
+	version: '0.2.0'
 	license: 'MIT'
 	dependencies: []
 }

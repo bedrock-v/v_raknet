@@ -84,6 +84,40 @@ fn test_local_listen_dial_write_read() {
 	assert <-done
 }
 
+fn test_ipv6_addr_port_from_string() {
+	addr := addr_port_from_string('[::1]:19133')!
+	assert addr.is6
+	assert addr.port == 19133
+	assert addr.ip6 == [u8(0), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]!
+}
+
+fn test_local_ipv6_listen_dial_write_read() {
+	mut listener := listen('[::1]:0') or { panic(err) }
+	defer {
+		listener.close() or {}
+	}
+	done := chan bool{cap: 1}
+	spawn accept_and_echo(listener, done)
+
+	mut conn := dial(listener.addr()) or { panic(err) }
+	defer {
+		conn.close() or {}
+	}
+	conn.write('ping'.bytes()) or { panic(err) }
+	mut buf := []u8{len: 16}
+	n := conn.read(mut buf) or { panic(err) }
+	assert buf[..n].bytestr() == 'pong'
+
+	select {
+		ok := <-done {
+			assert ok
+		}
+		2 * time.second {
+			assert false, 'ipv6 server did not receive echo request'
+		}
+	}
+}
+
 fn test_split_payload_over_small_mtu() {
 	mut listener := listen('127.0.0.1:0') or { panic(err) }
 	listener.max_mtu = 400

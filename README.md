@@ -46,6 +46,12 @@ data := raknet.ping('127.0.0.1:19132')!
 println(data.bytestr())
 ```
 
+IPv6 addresses use bracket notation:
+
+```v
+mut conn := raknet.dial('[::1]:19133')!
+```
+
 ## Configuration
 
 ```v
@@ -68,6 +74,7 @@ mut conn := dialer.dial(listener.addr())!
 ## **Notes**
 
 - `listen`, `dial`, `ping`, `read`, `read_packet`, `write` and `close` are the main public API surface.
+- `write` sends ReliableOrdered payloads. `write_reliable`, `write_unreliable`, `write_reliable_ordered`, `write_unreliable_sequenced` and `write_reliable_sequenced` are available for lower-level transports.
 - `write([]u8{})` returns an error; empty RakNet payloads are not sent.
 - Client-side connections own their UDP socket. Server-side connections share the listener socket.
 - `Conn` has app-level read/write deadlines, read/write timeouts, idle timeout and keepalive interval tuning.

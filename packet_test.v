@@ -100,9 +100,11 @@ fn test_reliability_indexes() {
 	mut conn := &Conn{
 		mtu: max_mtu_size
 	}
-	conn.write_with_reliability([u8(0xaa)], .unreliable)!
-	conn.write_with_reliability([u8(0xbb)], .reliable)!
-	conn.write_with_reliability([u8(0xcc)], .reliable_sequenced)!
+	conn.write_unreliable([u8(0xaa)])!
+	conn.write_reliable([u8(0xbb)])!
+	conn.write_reliable_ordered([u8(0xcc)])!
+	conn.write_unreliable_sequenced([u8(0xdd)])!
+	conn.write_reliable_sequenced([u8(0xee)])!
 
 	mut unreliable := Packet{}
 	unreliable.read(conn.sent_raw[0][4..])!
@@ -118,10 +120,24 @@ fn test_reliability_indexes() {
 	assert reliable.sequence_index == Uint24(0)
 	assert reliable.order_index == Uint24(0)
 
+	mut ordered := Packet{}
+	ordered.read(conn.sent_raw[2][4..])!
+	assert ordered.reliability == .reliable_ordered
+	assert ordered.message_index == Uint24(1)
+	assert ordered.sequence_index == Uint24(0)
+	assert ordered.order_index == Uint24(0)
+
 	mut sequenced := Packet{}
-	sequenced.read(conn.sent_raw[2][4..])!
-	assert sequenced.reliability == .reliable_sequenced
-	assert sequenced.message_index == Uint24(1)
+	sequenced.read(conn.sent_raw[3][4..])!
+	assert sequenced.reliability == .unreliable_sequenced
+	assert sequenced.message_index == Uint24(0)
 	assert sequenced.sequence_index == Uint24(0)
-	assert sequenced.order_index == Uint24(0)
+	assert sequenced.order_index == Uint24(1)
+
+	mut reliable_sequenced := Packet{}
+	reliable_sequenced.read(conn.sent_raw[4][4..])!
+	assert reliable_sequenced.reliability == .reliable_sequenced
+	assert reliable_sequenced.message_index == Uint24(2)
+	assert reliable_sequenced.sequence_index == Uint24(1)
+	assert reliable_sequenced.order_index == Uint24(2)
 }

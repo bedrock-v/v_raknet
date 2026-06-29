@@ -152,6 +152,38 @@ pub fn (mut c Conn) write(data []u8) !int {
 	return c.write_with_reliability(data, .reliable_ordered)
 }
 
+pub fn (mut c Conn) write_reliable_ordered(data []u8) !int {
+	return c.write(data)
+}
+
+pub fn (mut c Conn) write_reliable(data []u8) !int {
+	if data.len == 0 {
+		return error('cannot write empty packet')
+	}
+	return c.write_with_reliability(data, .reliable)
+}
+
+pub fn (mut c Conn) write_unreliable(data []u8) !int {
+	if data.len == 0 {
+		return error('cannot write empty packet')
+	}
+	return c.write_with_reliability(data, .unreliable)
+}
+
+pub fn (mut c Conn) write_unreliable_sequenced(data []u8) !int {
+	if data.len == 0 {
+		return error('cannot write empty packet')
+	}
+	return c.write_with_reliability(data, .unreliable_sequenced)
+}
+
+pub fn (mut c Conn) write_reliable_sequenced(data []u8) !int {
+	if data.len == 0 {
+		return error('cannot write empty packet')
+	}
+	return c.write_with_reliability(data, .reliable_sequenced)
+}
+
 fn (mut c Conn) write_with_reliability(data []u8, reliability Reliability) !int {
 	return c.write_with_reliability_internal(data, reliability, false)
 }
